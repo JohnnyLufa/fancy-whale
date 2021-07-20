@@ -11,7 +11,7 @@ on:
 env:
   DOCKER_USER: ${{ secrets.DOCKER_USER }}
   DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
-
+  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
 jobs:
   build:
@@ -22,6 +22,9 @@ jobs:
       packages: write
 
     steps:
+      - name: Post Job status on discord
+        run: |
+          curl --location --request POST $DISCORD_WEBHOOK --header 'Content-Type: application/json' --data-raw '{"content": "Docker build execution started."}'
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Login to docker
@@ -41,4 +44,7 @@ jobs:
       - name: Build python_node_builder
         run: |
           docker buildx build --pull --platform linux/amd64,linux/arm64 -t $DOCKER_USER/python_node_builder:$(date +"%Y%m%d") -t $DOCKER_USER/python_node_builder:latest --push -f ./rootabaga/Dockerfile.python_node_builder ./rootabaga/
-
+      - name: Post Job status on discord
+        if: always()
+        run: |
+          curl --location --request POST $DISCORD_WEBHOOK --header 'Content-Type: application/json' --data-raw '{"content": "Build execution status: ${{ job.status }}"}'
