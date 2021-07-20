@@ -27,13 +27,18 @@ jobs:
       - name: Login to docker
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_SECRET
-      - name: Init buildx
-        run: |
-          docker buildx create --use --name mybuild
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+      # - name: Init buildx
+      #   run: |
+      #     docker buildx create --use --name mybuild
       - name: Build phpapp
         run: |
           docker buildx build --pull --platform linux/amd64,linux/arm64 -t $DOCKER_USER/phpapp:$(date +"%Y%m%d") -t $DOCKER_USER/phpapp:latest --push -f ./lufa-development/Dockerfile.phpappscratch ./lufa-development/
       - name: Build python_node_builder
         run: |
           docker buildx build --pull --platform linux/amd64,linux/arm64 -t $DOCKER_USER/python_node_builder:$(date +"%Y%m%d") -t $DOCKER_USER/python_node_builder:latest --push -f ./rootabaga/Dockerfile.python_node_builder ./rootabaga/
-          
+
