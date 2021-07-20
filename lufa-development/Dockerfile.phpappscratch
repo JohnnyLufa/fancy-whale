@@ -54,7 +54,7 @@ RUN mkdir -p /run/php/
 # Install composer and necessary tools for it
 COPY --from=temp_composer /usr/bin/composer /usr/local/bin/composer
 RUN chmod +x /usr/local/bin/composer
-RUN apt update && apt install -y --no-install-recommends zip unzip && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends zip unzip && rm -rf /var/lib/apt/lists/*
 RUN composer selfupdate
 
 # Finish line, set running fpm args

@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Post Job status on discord
         run: |
-          curl --location --request POST $DISCORD_WEBHOOK --header 'Content-Type: application/json' --data-raw '{"content": "Docker build execution started."}'
+          curl --location --request POST $DISCORD_WEBHOOK --header 'Content-Type: application/json' --data-raw '{"content": "Docker build execution started."}' && exit 1
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Login to docker
