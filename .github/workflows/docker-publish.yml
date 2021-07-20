@@ -1,0 +1,39 @@
+name: docker-publish
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  DOCKER_USER: ${{ secrets.DOCKER_USER }}
+  DOCKER_SECRET: ${{ secrets.DOCKER_SECRET }}
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Login to docker
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_SECRET
+      - name: Init buildx
+        run: |
+          docker buildx create --use --name mybuild
+      - name: Build phpapp
+        run: |
+          docker buildx build --pull --platform linux/amd64,linux/arm64 -t $DOCKER_USER/phpapp:$(date +"%Y%m%d") -t $DOCKER_USER/phpapp:latest --push -f ./lufa-development/Dockerfile.phpappscratch ./lufa-development/
+      - name: Build python_node_builder
+        run: |
+          docker buildx build --pull --platform linux/amd64,linux/arm64 -t $DOCKER_USER/python_node_builder:$(date +"%Y%m%d") -t $DOCKER_USER/python_node_builder:latest --push -f ./rootabaga/Dockerfile.python_node_builder ./rootabaga/
+          
