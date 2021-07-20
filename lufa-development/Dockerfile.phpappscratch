@@ -57,7 +57,7 @@ RUN chmod +x /usr/local/bin/composer
 RUN apt-get update && apt-get install -y --no-install-recommends zip unzip && rm -rf /var/lib/apt/lists/*
 RUN composer selfupdate
 
-# Finish line, set running fpm args
+# Finish line, set running fpm args 
 STOPSIGNAL SIGQUIT
 EXPOSE 9000
 WORKDIR /var/www
