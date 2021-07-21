@@ -59,4 +59,4 @@ jobs:
         name: Post Job status on discord
         if: always()
         run: |
-          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_number }}: Execution status is \"${{ job.status }}\""}'
+          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_number }}: ${{ job.status }}"}'
