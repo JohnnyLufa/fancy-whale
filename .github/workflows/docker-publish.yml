@@ -15,7 +15,7 @@ jobs:
       - 
         name: Post Job status on discord
         run: |
-          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_id }}: Docker build execution started."}'
+          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_number }}: Docker build execution started."}'
       - 
         name: Checkout repository
         uses: actions/checkout@v2
@@ -59,4 +59,4 @@ jobs:
         name: Post Job status on discord
         if: always()
         run: |
-          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_id }}: Execution status is \"${{ job.status }}\""}'
+          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_number }}: Execution status is \"${{ job.status }}\""}'
