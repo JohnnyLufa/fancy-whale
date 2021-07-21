@@ -42,11 +42,11 @@ jobs:
       -
         name: Build and push phpapp
         run: |
-          docker buildx build --pull --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USER }}/phpapp:$(date +"%Y%m%d") -t ${{ secrets.DOCKER_USER }}/phpapp:latest --push -f ./lufa-development/Dockerfile.phpappscratch --cache-from type=local,src=/tmp/.buildx-cache --cache-to type=local,dest=/tmp/.buildx-cache-phpapp ./lufa-development/
+          docker buildx build --pull --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USER }}/phpapp:$(date +"%Y%m%d") -t ${{ secrets.DOCKER_USER }}/phpapp:latest --push -f ./lufa-development/Dockerfile.phpappscratch --cache-from type=local,src=/tmp/.buildx-cache/phpapp --cache-to type=local,dest=/tmp/.buildx-cache-new/phpapp ./lufa-development/
       -
         name: Build and push python_node_builder
         run: |
-          docker buildx build --pull --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USER }}/python_node_builder:$(date +"%Y%m%d") -t ${{ secrets.DOCKER_USER }}/python_node_builder:latest --push -f ./rootabaga/Dockerfile.python_node_builder --cache-from type=local,src=/tmp/.buildx-cache --cache-to type=local,dest=/tmp/.buildx-cache-python_node_builder ./rootabaga/
+          docker buildx build --pull --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USER }}/python_node_builder:$(date +"%Y%m%d") -t ${{ secrets.DOCKER_USER }}/python_node_builder:latest --push -f ./rootabaga/Dockerfile.python_node_builder --cache-from type=local,src=/tmp/.buildx-cache/python_node_builder --cache-to type=local,dest=/tmp/.buildx-cache-new/python_node_builder ./rootabaga/
       -
         # Temp fix 
         # https://github.com/docker/build-push-action/issues/252
@@ -54,8 +54,7 @@ jobs:
         name: Move cache
         run: |
           rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-python_node_builder /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-phpapp /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
       - 
         name: Post Job status on discord
         if: always()
