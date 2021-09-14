@@ -4,10 +4,8 @@ FROM ubuntu:20.04
 
 # Add ENV variables here, install and build php etc.
 # P/DLIB_HASH last updated: 2021-07-13
-ENV TZ="America/New_York" PHP_VERSION="8.0" DLIB_HASH="7d8c6a11418bf6e297585357d7a5e42216a6bce0" PDLIB_HASH="cedaecc76b0ef097a26a319ded4a8023ea318c79"
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
-RUN apt-get update && apt-get install -y software-properties-common && add-apt-repository -y ppa:ondrej/php && rm -rf /var/lib/apt/lists/*
+ENV PHP_VERSION="8.0" DLIB_HASH="7d8c6a11418bf6e297585357d7a5e42216a6bce0" PDLIB_HASH="cedaecc76b0ef097a26a319ded4a8023ea318c79"
+RUN apt-get update && apt-get upgrade -y && TZ="America/New_York" DEBIAN_FRONTEND="noninteractive" apt-get install -y software-properties-common tzdata && add-apt-repository -y ppa:ondrej/php && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     php$(echo $PHP_VERSION) \
     php$(echo $PHP_VERSION)-fpm \
