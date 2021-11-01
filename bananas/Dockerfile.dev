@@ -1,0 +1,10 @@
+FROM golang:1.17-alpine AS golib
+FROM node:16-alpine
+COPY --from=golib /usr/local/go /usr/local/go
+ENV PATH=$PATH:/usr/local/go/bin:/root/go/bin
+RUN go install github.com/githubnemo/CompileDaemon@v1.4.0
+RUN npm i -g pnpm
+RUN apk add --no-cache git openssh
+VOLUME /src/
+WORKDIR /src/
+CMD ./run_dev.sh

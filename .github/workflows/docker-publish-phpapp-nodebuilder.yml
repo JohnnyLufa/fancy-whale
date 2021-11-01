@@ -1,4 +1,4 @@
-name: docker-publish
+name: docker-publish-phpapp-nodebuilder
 
 on:
   schedule:
@@ -15,7 +15,7 @@ jobs:
       - 
         name: Post Job status on discord
         run: |
-          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_number }}: Docker build execution started."}'
+          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_number }}: Docker build execution started for phpapp, node_builder."}'
       - 
         name: Checkout repository
         uses: actions/checkout@v2
@@ -61,4 +61,4 @@ jobs:
         name: Post Job status on discord
         if: always()
         run: |
-          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_number }}: ${{ job.status }}"}'
+          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_number }}: ${{ job.status }} for phpapp, node_builder"}'
