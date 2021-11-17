@@ -11,7 +11,7 @@ RUN pip3 install --no-cache --upgrade pip setuptools wheel
 COPY --from=golib /usr/local/go /usr/local/go
 ENV PATH=$PATH:/usr/local/go/bin:/root/go/bin
 RUN go install github.com/githubnemo/CompileDaemon@v1.4.0
-RUN go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.43.0
+RUN CGO_ENABLED=0 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.43.0
 
 # Specific Node side of stuff below
 RUN npm i -g pnpm
