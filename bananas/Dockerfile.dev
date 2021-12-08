@@ -20,7 +20,8 @@ RUN go install github.com/swaggo/swag/cmd/swag@latest
 RUN npm i -g pnpm
 
 # Dev specific tweaks and final commands
-RUN apk add --no-cache git openssh alpine-sdk
+ENV EDITOR=nano
+RUN apk add --no-cache git openssh alpine-sdk bash nano
 VOLUME /src/
 WORKDIR /src/
 CMD ./run_dev.sh
