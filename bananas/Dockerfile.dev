@@ -12,7 +12,6 @@ RUN pip3 install --no-cache --upgrade pip setuptools wheel
 COPY --from=golib /usr/local/go /usr/local/go
 ENV PATH=$PATH:/usr/local/go/bin:/root/go/bin
 RUN go install github.com/githubnemo/CompileDaemon@v1.4.0
-# RUN CGO_ENABLED=0 go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.43.0
 COPY --from=linter /usr/bin/golangci-lint /usr/bin/golangci-lint
 RUN go install github.com/swaggo/swag/cmd/swag@latest
 
@@ -21,7 +20,9 @@ RUN npm i -g pnpm
 
 # Dev specific tweaks and final commands
 ENV EDITOR=nano
-RUN apk add --no-cache git openssh alpine-sdk bash nano
+RUN apk add --no-cache git openssh alpine-sdk bash nano zsh curl
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN mv /bin/ash /bin/ash.bak && ln -s /bin/zsh /bin/ash
 VOLUME /src/
 WORKDIR /src/
 CMD ./run_dev.sh
