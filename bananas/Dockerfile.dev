@@ -1,5 +1,4 @@
 FROM golang:1.17-bullseye AS golib
-FROM golangci/golangci-lint:v1.43.0 AS linter
 FROM ubuntu:20.04
 
 # Install build-essential in case it is needed for node cuz its nOoOdDEe.
@@ -15,8 +14,8 @@ RUN bash -c "source /root/.nvm/nvm.sh && nvm install 16 && nvm use default 16"
 COPY --from=golib /usr/local/go /usr/local/go
 ENV PATH=$PATH:/usr/local/go/bin:/root/go/bin
 RUN go install github.com/githubnemo/CompileDaemon@v1.4.0
-COPY --from=linter /usr/bin/golangci-lint /usr/bin/golangci-lint
-RUN go install github.com/swaggo/swag/cmd/swag@latest
+RUN go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.43.0
+RUN go install github.com/swaggo/swag/cmd/swag@v1.7.6
 
 # Specific Node side of stuff below
 RUN bash -c "source /root/.nvm/nvm.sh && npm i -g pnpm"
