@@ -1,0 +1,44 @@
+name: docker-publish-nodebuilder
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  # push:
+  #   branches: [ master ]
+  # pull_request:
+  #   branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Post Job status on discord
+        run: |
+          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_number }}: Docker build execution started for node_builder."}'
+      - 
+        name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: master
+      - 
+        name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+      - 
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_SECRET }}
+      -
+        name: Build and push python_node_builder
+        run: |
+          docker buildx build --pull --no-cache --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USER }}/python_node_builder:$(date +"%Y%m%d") -t ${{ secrets.DOCKER_USER }}/python_node_builder:latest --push -f ./rootabaga/Dockerfile.python_node_builder ./rootabaga/
+      - 
+        name: Post Job status on discord
+        if: always()
+        run: |
+          curl --location --request POST ${{ secrets.DISCORD_WEBHOOK }} --header 'Content-Type: application/json' --data-raw '{"content": "Build #${{ github.run_number }}: ${{ job.status }} for node_builder"}'
