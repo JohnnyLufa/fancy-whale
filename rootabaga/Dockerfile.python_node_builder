@@ -1,7 +1,22 @@
-FROM node:16-alpine
-ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache python3 make build-base && ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip
+FROM ubuntu:20.04
+ENV PYTHONUNBUFFERED=1 TZ="America/New_York" DEBIAN_FRONTEND="noninteractive"
+
+# Install build-essential in case it is needed for node cuz its nOoOdDEe.
+RUN apt-get update && apt-get upgrade -y && apt-get install -y software-properties-common tzdata python3-pip build-essential git ssh nano zsh curl && rm -rf /var/lib/apt/lists/*
 RUN pip3 install --no-cache --upgrade pip setuptools wheel
-RUN npm install -g npm@latest
-RUN npm config set python "$(which python3)"
+
+# Install npm
+RUN touch /root/.zshrc
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+RUN bash -c "source /root/.nvm/nvm.sh && nvm install 16 && nvm use default 16"
+
+# Specific Node side of stuff below
+RUN bash -c "source /root/.nvm/nvm.sh && npm i -g npm pm2 gulp"
+
+# Dev specific tweaks and final commands
+ENV EDITOR=nano
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN chsh -s /bin/zsh
+RUN bash -c "echo \"\" >> ~/.zshrc" && bash -c "echo \"export NVM_DIR=\\\"\\\$HOME/.nvm\\\"\" >> ~/.zshrc" && bash -c "echo \"[ -s \\\"\\\$NVM_DIR/nvm.sh\\\" ] && \. \\\"\\\$NVM_DIR/nvm.sh\\\"  # This loads nvm\" >> ~/.zshrc" && bash -c "echo \"[ -s \\\"\\\$NVM_DIR/bash_completion\\\" ] && \. \\\"\\\$NVM_DIR/bash_completion\\\"  # This loads nvm bash_completion\" >> ~/.zshrc"
+VOLUME /src/
+WORKDIR /src/
