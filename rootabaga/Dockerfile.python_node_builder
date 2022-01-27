@@ -11,7 +11,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | b
 RUN bash -c "source /root/.nvm/nvm.sh && nvm install 16 && nvm use default 16"
 
 # Specific Node side of stuff below
-RUN bash -c "source /root/.nvm/nvm.sh && npm i -g npm pm2 gulp"
+RUN bash -c "source /root/.nvm/nvm.sh && npm i -g npm pm2 gulp && npm config set python \"\$(which python3)\""
 
 # Dev specific tweaks and final commands
 ENV EDITOR=nano
