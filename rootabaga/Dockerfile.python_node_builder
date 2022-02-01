@@ -6,7 +6,7 @@ RUN apt-get update && apt-get upgrade -y && TZ="America/New_York" DEBIAN_FRONTEN
 RUN pip3 install --no-cache --upgrade pip setuptools wheel
 
 # Specific Node side of stuff below
-RUN bash -c "npm i -g npm pm2 gulp && npm config set python \"\$(which python3)\""
+RUN bash -c "npm i -g npm nodemon typescript && npm config set python \"\$(which python3)\""
 
 # Dev specific tweaks and final commands
 ENV EDITOR=nano
