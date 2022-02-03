@@ -7,46 +7,46 @@ FROM ubuntu:20.04
 ENV PHP_VERSION="8.0" DLIB_HASH="7d8c6a11418bf6e297585357d7a5e42216a6bce0" PDLIB_HASH="cedaecc76b0ef097a26a319ded4a8023ea318c79"
 RUN apt-get update && apt-get upgrade -y && TZ="America/New_York" DEBIAN_FRONTEND="noninteractive" apt-get install -y software-properties-common tzdata && add-apt-repository -y ppa:ondrej/php && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
-    php$(echo $PHP_VERSION) \
-    php$(echo $PHP_VERSION)-fpm \
-    php$(echo $PHP_VERSION)-cli \
-    php$(echo $PHP_VERSION)-opcache \
-    php$(echo $PHP_VERSION)-readline \
-    php$(echo $PHP_VERSION)-common \
-    php$(echo $PHP_VERSION)-curl \
-    php$(echo $PHP_VERSION)-gettext \
-    php$(echo $PHP_VERSION)-cgi \
-    php$(echo $PHP_VERSION)-gd \
-    php$(echo $PHP_VERSION)-imagick \
-    php$(echo $PHP_VERSION)-intl \
-    php$(echo $PHP_VERSION)-mcrypt \
-    php$(echo $PHP_VERSION)-mysql \
-    php$(echo $PHP_VERSION)-redis \
-    php$(echo $PHP_VERSION)-xml \
-    php$(echo $PHP_VERSION)-dev \
-    php$(echo $PHP_VERSION)-bcmath \
-    php$(echo $PHP_VERSION)-bz2 \
-    php$(echo $PHP_VERSION)-imap \
-    php$(echo $PHP_VERSION)-zip \
-    php$(echo $PHP_VERSION)-soap \
-    php$(echo $PHP_VERSION)-mbstring \
-    php$(echo $PHP_VERSION)-dba \
-    php$(echo $PHP_VERSION)-apcu \
-    php$(echo $PHP_VERSION)-mongodb && rm -rf /var/lib/apt/lists/*
+    php"$PHP_VERSION" \
+    php"$PHP_VERSION"-fpm \
+    php"$PHP_VERSION"-cli \
+    php"$PHP_VERSION"-opcache \
+    php"$PHP_VERSION"-readline \
+    php"$PHP_VERSION"-common \
+    php"$PHP_VERSION"-curl \
+    php"$PHP_VERSION"-gettext \
+    php"$PHP_VERSION"-cgi \
+    php"$PHP_VERSION"-gd \
+    php"$PHP_VERSION"-imagick \
+    php"$PHP_VERSION"-intl \
+    php"$PHP_VERSION"-mcrypt \
+    php"$PHP_VERSION"-mysql \
+    php"$PHP_VERSION"-redis \
+    php"$PHP_VERSION"-xml \
+    php"$PHP_VERSION"-dev \
+    php"$PHP_VERSION"-bcmath \
+    php"$PHP_VERSION"-bz2 \
+    php"$PHP_VERSION"-imap \
+    php"$PHP_VERSION"-zip \
+    php"$PHP_VERSION"-soap \
+    php"$PHP_VERSION"-mbstring \
+    php"$PHP_VERSION"-dba \
+    php"$PHP_VERSION"-apcu \
+    php"$PHP_VERSION"-mongodb && rm -rf /var/lib/apt/lists/*
 # Only get depth 1 and lock version for dlib and pdlib
-RUN apt-get update && apt-get install -y --no-install-recommends git g++ make cmake libx11-dev autoconf libopenblas-dev liblapack-dev && cd /root/ && mkdir dlib && cd dlib && git init && git remote add origin https://github.com/davisking/dlib.git && git fetch --depth 1 origin $DLIB_HASH && git checkout FETCH_HEAD && mkdir -p /root/dlib/dlib/build/ && cd /root/dlib/dlib/build/ && cmake -DBUILD_SHARED_LIBS=ON -- -j $(nproc) .. && make -j$(nproc) && make install && cd /root/ && rm -r /root/dlib/ && mkdir pdlib && cd pdlib && git init && git remote add origin https://github.com/goodspb/pdlib.git && git fetch --depth 1 origin $PDLIB_HASH && git checkout FETCH_HEAD && phpize && ./configure --enable-debug && make -j$(nproc) && make install && printf "\n[pdlib]\nextension=\"pdlib.so\"\n" >> /etc/php/$(echo $PHP_VERSION)/fpm/php.ini && cd /root/ && rm -r /root/pdlib/ && apt-get remove -y git g++ make cmake libx11-dev autoconf && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends git g++ make cmake libx11-dev autoconf libopenblas-dev liblapack-dev && cd /root/ && mkdir dlib && cd dlib && git init && git remote add origin https://github.com/davisking/dlib.git && git fetch --depth 1 origin $DLIB_HASH && git checkout FETCH_HEAD && mkdir -p /root/dlib/dlib/build/ && cd /root/dlib/dlib/build/ && cmake -DBUILD_SHARED_LIBS=ON -- -j $(nproc) .. && make -j$(nproc) && make install && cd /root/ && rm -r /root/dlib/ && mkdir pdlib && cd pdlib && git init && git remote add origin https://github.com/goodspb/pdlib.git && git fetch --depth 1 origin $PDLIB_HASH && git checkout FETCH_HEAD && phpize && ./configure --enable-debug && make -j$(nproc) && make install && printf "\n[pdlib]\nextension=\"pdlib.so\"\n" >> /etc/php/"$PHP_VERSION"/fpm/php.ini && cd /root/ && rm -r /root/pdlib/ && apt-get remove -y git g++ make cmake libx11-dev autoconf && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 # Configure php.ini and fpm
 RUN sed -i \
-    -e 's@listen = /run/php/php'"$PHP_VERSION"'-fpm.sock@listen = 9000@g' \
-    /etc/php/$(echo $PHP_VERSION)/fpm/pool.d/www.conf
+    -e 's@listen = /run/php/php'""$PHP_VERSION""'-fpm.sock@listen = 9000@g' \
+    /etc/php/"$PHP_VERSION"/fpm/pool.d/www.conf
 RUN sed -i \
     -e 's@memory_limit = 128M@memory_limit = 1024M@g' \
     -e 's@upload_max_filesize = 2M@upload_max_filesize = 32M@g' \
     -e 's@post_max_size = 8M@post_max_size = 32M@g' \
     -e 's@max_execution_time = 30@max_execution_time = 600@g' \
     -e 's@;date.timezone =@date.timezone = America/New_York@g' \
-    /etc/php/$(echo $PHP_VERSION)/fpm/php.ini
+    /etc/php/"$PHP_VERSION"/fpm/php.ini
 RUN mkdir -p /run/php/
 
 # Install composer and necessary tools for it
@@ -59,4 +59,4 @@ RUN composer selfupdate
 STOPSIGNAL SIGQUIT
 EXPOSE 9000
 WORKDIR /var/www
-CMD /usr/sbin/php-fpm$(echo $PHP_VERSION) --nodaemonize -O
+CMD /usr/sbin/php-fpm"$PHP_VERSION" --nodaemonize -O
