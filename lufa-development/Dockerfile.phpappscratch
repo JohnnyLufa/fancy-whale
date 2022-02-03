@@ -55,6 +55,9 @@ RUN chmod +x /usr/local/bin/composer
 RUN apt-get update && apt-get install -y --no-install-recommends zip unzip && rm -rf /var/lib/apt/lists/*
 RUN composer selfupdate
 
+# Set uid and gid the same as webserver's
+RUN usermod -u 82 www-data
+
 # Finish line, set running fpm args 
 STOPSIGNAL SIGQUIT
 EXPOSE 9000
