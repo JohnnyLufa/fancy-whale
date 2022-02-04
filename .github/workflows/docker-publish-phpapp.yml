@@ -36,7 +36,7 @@ jobs:
       -
         name: Build and push phpapp
         run: |
-          docker buildx build --pull --no-cache --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USER }}/phpapp:$(date +"%Y%m%d") -t ${{ secrets.DOCKER_USER }}/phpapp:latest --push -f ./lufa-development/Dockerfile.phpappscratch ./lufa-development/
+          docker buildx build --pull --no-cache --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKER_USER }}/phpapp:$(date +"%Y%m%d") -t ${{ secrets.DOCKER_USER }}/phpapp:latest --push -f ./phpapp/Dockerfile.phpapp ./phpapp/
       - 
         name: Post Job status on discord
         if: always()
