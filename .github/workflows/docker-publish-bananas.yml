@@ -1,8 +1,8 @@
 name: docker-publish-bananas
 
-on:
-  schedule:
-    - cron: '0 5 * * *'
+# on:
+#   schedule:
+#     - cron: '0 5 * * *'
   # push:
   #   branches: [ master ]
   # pull_request:
